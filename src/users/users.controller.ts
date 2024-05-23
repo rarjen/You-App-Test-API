@@ -1,29 +1,55 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
+import { RegisterUserDTO } from './dto/register.user.dto';
+import { LoginUserDTO } from './dto/login.user.dto';
 
-@Controller('users')
+@Controller()
 export class UsersController {
-  constructor(private usersService: UsersService) {
-    this.usersService = usersService;
-  }
-
-  @Get()
-  getAllUsers() {
-    return this.usersService.getAllUsers();
-  }
+  constructor(private usersService: UsersService) {}
 
   @Post('/register')
-  register(
-    @Body('email') email: string,
-    @Body('username') username: string,
-    @Body('password') password: string,
-    @Body('confirm_password') confirm_password: string,
-  ) {
-    return this.usersService.register(
-      email,
-      username,
-      password,
-      confirm_password,
-    );
+  async register(@Body() payload: RegisterUserDTO) {
+    try {
+      const newUser = await this.usersService.registerUser(payload);
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: 'Success login!',
+        data: newUser,
+      };
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException(error.message);
+      }
+      throw new BadRequestException('Something went wrong!');
+    }
+  }
+
+  @Post('/login')
+  async login(@Body() payload: LoginUserDTO) {
+    try {
+      const result = await this.usersService.loginUser(payload);
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Success register user',
+        data: result,
+      };
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException(error.message);
+      }
+      throw new BadRequestException('Something went wrong!');
+    }
   }
 }
