@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
@@ -7,15 +6,15 @@ import {
   Param,
   Patch,
   Post,
-  Put,
-  UsePipes,
-  ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { RegisterUserDTO } from './dto/register.user.dto';
 import { LoginUserDTO } from './dto/login.user.dto';
 import { CreateProfileDTO } from './dto/create.profile.user.dto';
 import { UpdateProfileDTO } from './dto/update.profile.user.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from './get-user.decorator';
 
 @Controller()
 export class UsersController {
@@ -42,7 +41,23 @@ export class UsersController {
 
       return {
         statusCode: HttpStatus.OK,
-        message: 'Success register user',
+        message: 'Success login',
+        data: result,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Get('/getProfile')
+  @UseGuards(AuthGuard('jwt'))
+  async getProfileUser(@GetUser() user: any) {
+    try {
+      const result = await this.usersService.getProfileUser(user.userId);
+
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: 'Success get profile',
         data: result,
       };
     } catch (error) {
@@ -51,9 +66,13 @@ export class UsersController {
   }
 
   @Post('/createProfile')
-  async createProfile(@Body() payload: CreateProfileDTO) {
+  @UseGuards(AuthGuard('jwt'))
+  async createProfile(@GetUser() user: any, @Body() payload: CreateProfileDTO) {
     try {
-      const result = await this.usersService.createProfileUser(payload);
+      const result = await this.usersService.createProfileUser(
+        user.userId,
+        payload,
+      );
 
       return {
         statusCode: HttpStatus.CREATED,
@@ -65,13 +84,15 @@ export class UsersController {
     }
   }
 
-  @Patch('/updateProfile/:id')
-  async updateProfile(
-    @Param('id') id: string,
-    @Body() payload: UpdateProfileDTO,
-  ) {
+  @Post('/createProfile')
+  @UseGuards(AuthGuard('jwt'))
+  @Patch('/updateProfile')
+  async updateProfile(@GetUser() user: any, @Body() payload: UpdateProfileDTO) {
     try {
-      const result = await this.usersService.updateProfileUser(id, payload);
+      const result = await this.usersService.updateProfileUser(
+        user.id,
+        payload,
+      );
 
       return {
         statusCode: HttpStatus.OK,
