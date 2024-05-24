@@ -7,11 +7,18 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '../../schema/user.schema';
 import { Model } from 'mongoose';
 import { LoginUserDTO } from './dto/login.user.dto';
+import { CreateProfileDTO } from './dto/create.profile.user.dto';
+import { Profile } from 'schema/profile.schema';
+import { Horroscopehelper } from '../helpers/horroscope.helpers';
+import { ConversionHelper } from 'src/helpers/conversion.helpers';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(Profile.name) private profileModel: Model<Profile>,
+    private readonly horrosCopeService: Horroscopehelper,
+    private readonly conversionHelper: ConversionHelper,
     private jwtService: JwtService,
   ) {}
 
@@ -32,7 +39,6 @@ export class UsersService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create a new user
     const newUser = new this.userModel({
       _id: uuidv4(),
       email,
@@ -59,5 +65,35 @@ export class UsersService {
     const accessToken = this.jwtService.sign(payload);
 
     return { accessToken };
+  }
+
+  async createProfileUser(
+    createProfileUserDTO: CreateProfileDTO,
+  ): Promise<Profile> {
+    const { display_name, gender, birthday, weight, height } =
+      createProfileUserDTO;
+
+    const birthdayConvertToDate = new Date(birthday);
+    const heightConverstionToFeet =
+      this.conversionHelper.convertCmToFeet(height);
+
+    const result = new this.profileModel({
+      _id: uuidv4(),
+      display_name,
+      gender,
+      birthday,
+      horoscope: this.horrosCopeService.getWesternHoroscope(
+        birthdayConvertToDate,
+      ),
+      zodiac: this.horrosCopeService.getChineseZodiac(
+        birthdayConvertToDate.getFullYear(),
+      ),
+      weight,
+      weightInKilograms: `${weight} Kg`,
+      height,
+      heightInCentimenters: `${height} Cm`,
+      heightInFeet: `${heightConverstionToFeet} Feet`,
+    });
+    return result.save();
   }
 }
