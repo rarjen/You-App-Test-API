@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { RegisterUserDTO } from './dto/register.user.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -11,6 +15,7 @@ import { CreateProfileDTO } from './dto/create.profile.user.dto';
 import { Profile } from 'schema/profile.schema';
 import { Horroscopehelper } from '../helpers/horroscope.helpers';
 import { ConversionHelper } from 'src/helpers/conversion.helpers';
+import { UpdateProfileDTO } from './dto/update.profile.user.dto';
 
 @Injectable()
 export class UsersService {
@@ -95,5 +100,43 @@ export class UsersService {
       heightInFeet: `${heightConverstionToFeet} Feet`,
     });
     return result.save();
+  }
+
+  async updateProfileUser(
+    id: string,
+    updateProfileDTO: UpdateProfileDTO,
+  ): Promise<Profile> {
+    const { display_name, gender, birthday, weight, height } = updateProfileDTO;
+
+    const birthdayConvertToDate = new Date(birthday);
+    const heightConverstionToFeet =
+      this.conversionHelper.convertCmToFeet(height);
+
+    const result = await this.profileModel.findByIdAndUpdate(
+      id,
+      {
+        display_name,
+        gender,
+        birthday,
+        horoscope: this.horrosCopeService.getWesternHoroscope(
+          birthdayConvertToDate,
+        ),
+        zodiac: this.horrosCopeService.getChineseZodiac(
+          birthdayConvertToDate.getFullYear(),
+        ),
+        weight,
+        weightInKilograms: `${weight} Kg`,
+        height,
+        heightInCentimenters: `${height} Cm`,
+        heightInFeet: `${heightConverstionToFeet} Feet`,
+      },
+      { new: true },
+    );
+
+    if (!result) {
+      throw new NotFoundException(`Profile with ID "${id}" not found`);
+    }
+
+    return result;
   }
 }
