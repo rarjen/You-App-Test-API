@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
+// import { JwtStrategyModule } from './jwt-strategy/jwt-strategy.module';
 
 @Module({
   imports: [
