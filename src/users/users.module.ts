@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Profile, ProfileSchema } from 'schema/profile.schema';
 import { Horroscopehelper } from 'src/helpers/horroscope.helpers';
 import { ConversionHelper } from 'src/helpers/conversion.helpers';
+import { JwtStrategy } from 'src/auth/jwt.strategy';
 // import { JwtStrategy } from './jwt.strategy';
 
 @Module({
@@ -29,6 +30,6 @@ import { ConversionHelper } from 'src/helpers/conversion.helpers';
     }),
   ],
   controllers: [UsersController],
-  providers: [UsersService, Horroscopehelper, ConversionHelper],
+  providers: [UsersService, Horroscopehelper, ConversionHelper, JwtStrategy],
 })
 export class UsersModule {}
