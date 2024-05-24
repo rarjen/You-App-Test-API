@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
+import { Document, Schema as MongooseSchema, Types } from 'mongoose';
 import { Profile } from './profile.schema';
 
 @Schema({ timestamps: true })
@@ -15,9 +15,6 @@ export class User extends Document {
 
   @Prop()
   password: string;
-
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Profile' })
-  profile: Profile;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
