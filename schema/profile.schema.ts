@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Schema as MongooseSchema, Types } from 'mongoose';
 import { User } from './user.schema';
 
 enum Gender {
@@ -11,6 +11,9 @@ enum Gender {
 export class Profile extends Document {
   @Prop()
   _id: string;
+
+  @Prop()
+  user_id: string;
 
   @Prop()
   display_name: string;
