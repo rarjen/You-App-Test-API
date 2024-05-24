@@ -1,7 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
+import { Profile } from './profile.schema';
 
 @Schema({ timestamps: true })
-export class User {
+export class User extends Document {
   @Prop()
   _id: string;
 
@@ -14,26 +16,8 @@ export class User {
   @Prop()
   password: string;
 
-  @Prop()
-  display_name: string;
-
-  @Prop()
-  gender: string;
-
-  @Prop()
-  birthday: string;
-
-  @Prop()
-  horoscope: string;
-
-  @Prop()
-  zodiac: string;
-
-  @Prop()
-  height: number;
-
-  @Prop()
-  weight: number;
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Profile' })
+  profile: Profile;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
