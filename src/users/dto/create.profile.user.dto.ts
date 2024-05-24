@@ -1,4 +1,4 @@
-import { IsDateString, IsEmail, IsIn, IsNotEmpty } from 'class-validator';
+import { IsDateString, IsIn } from 'class-validator';
 
 export class CreateProfileDTO {
   display_name: string;
