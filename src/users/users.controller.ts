@@ -13,6 +13,7 @@ import {
 import { UsersService } from './users.service';
 import { RegisterUserDTO } from './dto/register.user.dto';
 import { LoginUserDTO } from './dto/login.user.dto';
+import { CreateProfileDTO } from './dto/create.profile.user.dto';
 
 @Controller()
 export class UsersController {
@@ -49,6 +50,27 @@ export class UsersController {
       if (error instanceof BadRequestException) {
         throw new BadRequestException(error.message);
       }
+      throw new BadRequestException('Something went wrong!');
+    }
+  }
+
+  @Post('/createProfile')
+  async createProfile(@Body() payload: CreateProfileDTO) {
+    try {
+      const result = await this.usersService.createProfileUser(payload);
+
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: 'Success save profile',
+        data: result,
+      };
+    } catch (error) {
+      console.log(error);
+
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException(error.message);
+      }
+
       throw new BadRequestException('Something went wrong!');
     }
   }
