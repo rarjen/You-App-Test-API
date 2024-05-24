@@ -5,6 +5,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Put,
   UsePipes,
@@ -14,6 +15,7 @@ import { UsersService } from './users.service';
 import { RegisterUserDTO } from './dto/register.user.dto';
 import { LoginUserDTO } from './dto/login.user.dto';
 import { CreateProfileDTO } from './dto/create.profile.user.dto';
+import { UpdateProfileDTO } from './dto/update.profile.user.dto';
 
 @Controller()
 export class UsersController {
@@ -29,10 +31,7 @@ export class UsersController {
         data: newUser,
       };
     } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw new BadRequestException(error.message);
-      }
-      throw new BadRequestException('Something went wrong!');
+      throw error;
     }
   }
 
@@ -47,10 +46,7 @@ export class UsersController {
         data: result,
       };
     } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw new BadRequestException(error.message);
-      }
-      throw new BadRequestException('Something went wrong!');
+      throw error;
     }
   }
 
@@ -65,13 +61,25 @@ export class UsersController {
         data: result,
       };
     } catch (error) {
-      console.log(error);
+      throw error;
+    }
+  }
 
-      if (error instanceof BadRequestException) {
-        throw new BadRequestException(error.message);
-      }
+  @Patch('/updateProfile/:id')
+  async updateProfile(
+    @Param('id') id: string,
+    @Body() payload: UpdateProfileDTO,
+  ) {
+    try {
+      const result = await this.usersService.updateProfileUser(id, payload);
 
-      throw new BadRequestException('Something went wrong!');
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Success update profile',
+        data: result,
+      };
+    } catch (error) {
+      throw error;
     }
   }
 }
