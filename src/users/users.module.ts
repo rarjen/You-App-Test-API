@@ -9,7 +9,6 @@ import { Profile, ProfileSchema } from 'schema/profile.schema';
 import { Horroscopehelper } from 'src/helpers/horroscope.helpers';
 import { ConversionHelper } from 'src/helpers/conversion.helpers';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
-// import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
@@ -21,7 +20,6 @@ import { JwtStrategy } from 'src/auth/jwt.strategy';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '60m' },
       }),
       inject: [ConfigService],
     }),
