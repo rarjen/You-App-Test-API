@@ -16,7 +16,6 @@ import { Profile } from 'schema/profile.schema';
 import { Horroscopehelper } from '../helpers/horroscope.helpers';
 import { ConversionHelper } from 'src/helpers/conversion.helpers';
 import { UpdateProfileDTO } from './dto/update.profile.user.dto';
-import { profile } from 'console';
 
 @Injectable()
 export class UsersService {
