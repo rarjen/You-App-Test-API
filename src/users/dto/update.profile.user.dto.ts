@@ -13,7 +13,7 @@ export class UpdateProfileDTO {
 
   heightInCentimeter: string;
 
-  heightInInches: string;
+  heightInFeet: string;
 
   weight: number;
 
