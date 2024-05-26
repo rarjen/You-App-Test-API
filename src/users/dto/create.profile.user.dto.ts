@@ -17,7 +17,7 @@ export class CreateProfileDTO {
 
   heightInCentimeter: string;
 
-  heightInInches: string;
+  heightInFeet: string;
 
   weight: number;
 
