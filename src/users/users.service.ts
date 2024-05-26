@@ -12,9 +12,9 @@ import { User } from '../../schema/user.schema';
 import { Model, Types } from 'mongoose';
 import { LoginUserDTO } from './dto/login.user.dto';
 import { CreateProfileDTO } from './dto/create.profile.user.dto';
-import { Profile } from 'schema/profile.schema';
+import { Profile } from '../../schema/profile.schema';
 import { Horroscopehelper } from '../helpers/horroscope.helpers';
-import { ConversionHelper } from 'src/helpers/conversion.helpers';
+import { ConversionHelper } from '../helpers/conversion.helpers';
 import { UpdateProfileDTO } from './dto/update.profile.user.dto';
 
 @Injectable()
